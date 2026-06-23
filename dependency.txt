@@ -1,0 +1,11 @@
+
+DEPENDECIES: -
+
+>> pdf-parse	        -- Extract text from PDF resumes
+>> mammoth	Extract     -- text from DOCX resumes
+>> @google/genai	    -- Official Google Gemini SDK
+>> @types/pdf-parse	    -- TypeScript types
+
+DEV-DEPENDENCIES:-
+
+>> TailwindCSS with Prettier
