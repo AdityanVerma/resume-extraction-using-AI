@@ -6,14 +6,21 @@ import ResultCard from "@/components/ResultCard";
 import ResumeUpload from "@/components/ResumeUpload";
 
 interface ResumeData {
-  rawText: string;
-  fileType: string;
-  charCount: number;
+  extractedText: string;
+
+  metadata: {
+    fileType: string;
+    charCount: number;
+  };
 }
 
 export default function Home() {
-  const [loading, setLoading] = useState(false);
+  const [parsingLoading, setParsingLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+
   const [result, setResult] = useState<ResumeData | null>(null);
+  const [aiResult, setAiResult] = useState<any>(null);
+
   const [error, setError] = useState("");
 
   return (
@@ -52,9 +59,8 @@ export default function Home() {
 
         {result && !loading && (
           <ResultCard
-            rawText={result.rawText}
-            fileType={result.fileType}
-            charCount={result.charCount}
+            extractedText={result.extractedText}
+            metadata={result.metadata}
           />
         )}
       </div>

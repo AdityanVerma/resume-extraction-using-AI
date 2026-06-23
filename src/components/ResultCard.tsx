@@ -1,16 +1,18 @@
 interface ResultCardProps {
-    rawText: string;
-    fileType: string;
-    charCount: number;
+    extractedText: string;
+
+    metadata: {
+        fileType: string;
+        charCount: number;
+    };
 }
 
 export default function ResultCard({
-    rawText,
-    fileType,
-    charCount,
+    extractedText,
+    metadata,
 }: ResultCardProps) {
     const copyToClipboard = async () => {
-        await navigator.clipboard.writeText(rawText);
+        await navigator.clipboard.writeText(extractedText);
     };
 
     return (
@@ -22,11 +24,16 @@ export default function ResultCard({
                     </h2>
                     <p className="text-sm text-gray-500">
                         File Type:{" "}
-                        <span className="font-medium uppercase">{fileType}</span>
+                        <span className="font-medium uppercase">
+                            {metadata.fileType}
+                        </span>
                     </p>
+
                     <p className="text-sm text-gray-500">
                         Characters:{" "}
-                        <span className="font-medium">{charCount}</span>
+                        <span className="font-medium">
+                            {metadata.charCount}
+                        </span>
                     </p>
                 </div>
 
@@ -38,9 +45,9 @@ export default function ResultCard({
                 </button>
             </div>
 
-            <div className="max-h-[500px] overflow-y-auto rounded-xl bg-gray-50 p-4">
-                <pre className="whitespace-pre-wrap break-words text-sm text-gray-800">
-                    {rawText}
+            <div className="max-h-125 overflow-y-auto rounded-xl bg-gray-50 p-4">
+                <pre className="whitespace-pre-wrap wrap-break-word text-sm text-gray-800">
+                    {extractedText}
                 </pre>
             </div>
         </div>

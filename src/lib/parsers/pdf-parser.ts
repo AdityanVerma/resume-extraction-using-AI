@@ -1,4 +1,4 @@
-import { PDFParse } from 'pdf-parse';
+import pdfParse from 'pdf-parse';
 
 import { ParseErrorCode, type ParseError } from '@/types/resume';
 
@@ -41,14 +41,13 @@ interface PdfParseOutput {
  * @throws ParseError with code CORRUPT_FILE or PARSE_FAILED
  */
 export async function parsePdf(buffer: Buffer): Promise<PdfParseOutput> {
-  let result: Awaited<ReturnType<typeof PDFParse>>;
+  let result: Awaited<ReturnType<typeof pdfParse>>;
 
   try {
-    // pdf-parse options:
-    //   max: 0  → parse ALL pages (default 0 already, but explicit is safer)
-    //   We do NOT pass a custom pagerender because we want plain text,
-    //   not layout-aware text — Gemini reconstructs structure in Phase 2.
-    result = await PDFParse(buffer, { max: 0 });
+    // pdf-parse parses all pages by default.
+    // We do NOT pass a custom pagerender because we want plain text,
+    // not layout-aware text — Gemini reconstructs structure in Phase 2.
+    result = await pdfParse(buffer);
   } catch (err) {
     // pdf-parse throws a plain Error for encrypted PDFs, broken xref tables,
     // and files that claim to be PDFs but are not. We classify them here.

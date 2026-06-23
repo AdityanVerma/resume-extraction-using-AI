@@ -32,6 +32,43 @@ export interface ParsedTextResult {
   charCount: number;
 }
 
+export interface ResumeData {
+  required: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    jobRole: string;
+    company: string;
+    skills: string[];
+    areasOfInterest: string[];
+  };
+
+  optional: {
+    education: string[];
+    priorExperience: string[];
+    certifications: string[];
+    otherInformation: string[];
+  };
+}
+export interface ResumeExtractionResult {
+  resume: ResumeData;
+
+  metadata: {
+    fileType: SupportedFileType;
+    charCount: number;
+  };
+}
+
+export interface ParsedResumeResponse {
+  extractedText: string;
+
+  metadata: {
+    fileType: SupportedFileType;
+    charCount: number;
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Error codes
 // Enumerated as a const object so they can be used as both types and values
@@ -96,7 +133,7 @@ export interface ParseError {
  */
 export interface ApiSuccessResponse {
   success: true;
-  data: ParsedTextResult;
+  data: ParsedResumeResponse;
 }
 
 /**

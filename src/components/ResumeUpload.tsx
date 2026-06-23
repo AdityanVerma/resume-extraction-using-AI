@@ -3,9 +3,32 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 
 interface ResumeData {
-    rawText: string;
-    fileType: string;
-    charCount: number;
+    extractedText: string;
+
+    resume: {
+        required: {
+            firstName: string;
+            lastName: string;
+            email: string;
+            phoneNumber: string;
+            jobRole: string;
+            company: string;
+            skills: string[];
+            areasOfInterest: string[];
+        };
+
+        optional: {
+            education: string[];
+            priorExperience: string[];
+            certifications: string[];
+            otherInformation: string[];
+        };
+    };
+
+    metadata: {
+        fileType: string;
+        charCount: number;
+    };
 }
 
 interface ResumeUploadProps {

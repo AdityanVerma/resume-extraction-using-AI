@@ -10,6 +10,8 @@ import {
   type ApiErrorResponse,
 } from '@/types/resume';
 
+// import { extractResumeData } from '@/lib/ai/extract-resume';
+
 // ---------------------------------------------------------------------------
 // HTTP status code mapping
 //
@@ -192,10 +194,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // -------------------------------------------------------------------------
-  // Step 5 — Return success response
+  // Step 5 — Return extracted text
   // -------------------------------------------------------------------------
 
-  return successResponse(result);
+  return successResponse({
+    extractedText: result.rawText,
+
+    metadata: {
+      fileType: result.fileType,
+      charCount: result.charCount,
+    },
+  });
 }
 
 // ---------------------------------------------------------------------------
