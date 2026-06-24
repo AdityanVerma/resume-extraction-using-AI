@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({
 
 export async function extractResumeData(rawText: string) {
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-pro',
+    model: 'gemma-4-31b',
 
     contents: `
 You are a resume extraction engine.
