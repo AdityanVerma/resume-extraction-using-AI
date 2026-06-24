@@ -22,7 +22,15 @@ export async function POST(request: NextRequest) {
 
     const aiResponse = await extractResumeData(rawText);
 
-    const resumeData = JSON.parse(aiResponse);
+    let resumeData;
+
+    try {
+      resumeData = JSON.parse(aiResponse);
+    } catch {
+      console.error('Invalid JSON:', aiResponse);
+
+      throw new Error('Model returned invalid JSON');
+    }
 
     return NextResponse.json({
       success: true,
