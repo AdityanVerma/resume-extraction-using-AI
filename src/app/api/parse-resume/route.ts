@@ -22,15 +22,18 @@ import {
 // ---------------------------------------------------------------------------
 
 const ERROR_CODE_TO_HTTP_STATUS: Record<ParseErrorCode, number> = {
-  [ParseErrorCode.NO_FILE]: 400, // Bad Request — missing field
-  [ParseErrorCode.UNSUPPORTED_FILE_TYPE]: 415, // Unsupported Media Type
-  [ParseErrorCode.FILE_TOO_LARGE]: 413, // Content Too Large
-  [ParseErrorCode.MIME_EXTENSION_MISMATCH]: 415, // Unsupported Media Type
+  [ParseErrorCode.NO_FILE]: 400,
+  [ParseErrorCode.UNSUPPORTED_FILE_TYPE]: 415,
+  [ParseErrorCode.FILE_TOO_LARGE]: 413,
+  [ParseErrorCode.MIME_EXTENSION_MISMATCH]: 415,
   [ParseErrorCode.PASSWORD_PROTECTED]: 422,
-  [ParseErrorCode.CORRUPT_FILE]: 422, // Unprocessable Entity
-  [ParseErrorCode.SCANNED_PDF]: 422, // Unprocessable Entity
-  [ParseErrorCode.PARSE_FAILED]: 500, // Internal Server Error
-} as const;
+  [ParseErrorCode.CORRUPT_FILE]: 422,
+  [ParseErrorCode.SCANNED_PDF]: 422,
+  [ParseErrorCode.PAGE_LIMIT_EXCEEDED]: 422,
+  [ParseErrorCode.CHARACTER_LIMIT_EXCEEDED]: 422,
+  [ParseErrorCode.INSUFFICIENT_CONTENT]: 422,
+  [ParseErrorCode.PARSE_FAILED]: 500,
+};
 
 // ---------------------------------------------------------------------------
 // Response builders
