@@ -70,9 +70,9 @@ export async function parsePdf(buffer: Buffer): Promise<PdfParseOutput> {
 
     if (isEncrypted) {
       throw {
-        code: ParseErrorCode.CORRUPT_FILE,
+        code: ParseErrorCode.PASSWORD_PROTECTED,
         message:
-          'This PDF is password-protected and cannot be parsed. Please remove the password and try again.',
+          'This PDF is password-protected. Please remove the password and upload it again.',
         detail: `pdf-parse error: ${message}`,
       } satisfies ParseError;
     }

@@ -76,6 +76,26 @@ export const ACCEPTED_FILE_INPUT_TYPES =
 /** Displayed in UI hints and validation error detail fields. */
 export const SUPPORTED_FORMATS_LABEL = 'PDF or DOCX';
 
+// ---------------------------------------------------------------------------
+// Parsing limits
+// ---------------------------------------------------------------------------
+
+/**
+ * Maximum number of pages allowed in a PDF.
+ */
+export const MAX_PAGE_COUNT = 10;
+
+/**
+ * Minimum amount of extracted text required for a resume.
+ */
+export const MIN_CHARACTER_COUNT = 2000;
+
+/**
+ * Maximum amount of extracted text.
+ * Prevents sending extremely large prompts to AI.
+ */
+export const MAX_CHARACTER_COUNT = 40000;
+
 /**
  * Minimum rawText character count below which we consider a PDF to have
  * no extractable text layer (i.e. it is a scanned image PDF).

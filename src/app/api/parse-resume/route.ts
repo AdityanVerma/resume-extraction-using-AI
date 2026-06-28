@@ -26,6 +26,7 @@ const ERROR_CODE_TO_HTTP_STATUS: Record<ParseErrorCode, number> = {
   [ParseErrorCode.UNSUPPORTED_FILE_TYPE]: 415, // Unsupported Media Type
   [ParseErrorCode.FILE_TOO_LARGE]: 413, // Content Too Large
   [ParseErrorCode.MIME_EXTENSION_MISMATCH]: 415, // Unsupported Media Type
+  [ParseErrorCode.PASSWORD_PROTECTED]: 422,
   [ParseErrorCode.CORRUPT_FILE]: 422, // Unprocessable Entity
   [ParseErrorCode.SCANNED_PDF]: 422, // Unprocessable Entity
   [ParseErrorCode.PARSE_FAILED]: 500, // Internal Server Error
@@ -196,6 +197,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // -------------------------------------------------------------------------
   // Step 5 — Return extracted text
   // -------------------------------------------------------------------------
+
+  console.log(result);
 
   return successResponse({
     extractedText: result.rawText,

@@ -68,8 +68,7 @@ export default function Home() {
           </h1>
 
           <p className="mt-3 text-gray-600">
-            Upload a PDF or DOCX resume and extract raw text for AI
-            processing.
+            Upload a PDF or DOCX resume and extract raw text to create JSON File.
           </p>
         </div>
 

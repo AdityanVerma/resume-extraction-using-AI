@@ -7,7 +7,12 @@ import {
   type ParseError,
   type SupportedFileType,
 } from '@/types/resume';
-import { MIN_CHARS_FOR_VALID_TEXT } from '@/constants/file';
+import {
+  MIN_CHARS_FOR_VALID_TEXT,
+  MIN_CHARACTER_COUNT,
+  MAX_PAGE_COUNT,
+  MAX_CHARACTER_COUNT,
+} from '@/constants/file';
 
 // ---------------------------------------------------------------------------
 // Public API — the ONLY export route.ts imports from the parsers layer
@@ -54,20 +59,49 @@ export async function extractTextFromFile(
       // If pdf-parse ran without throwing but produced fewer than
       // MIN_CHARS_FOR_VALID_TEXT characters, the PDF has no embedded text
       // layer. It is almost certainly a scanned image. OCR is Phase 3+.
+      // 1. Scanned PDF
       if (rawText.length < MIN_CHARS_FOR_VALID_TEXT) {
         throw {
           code: ParseErrorCode.SCANNED_PDF,
           message:
-            'This PDF appears to be a scanned image and contains no extractable text. ' +
-            'Please upload a PDF with a text layer, or convert the file to DOCX.',
+            'This PDF appears to be a scanned image and contains no extractable text. Please upload a PDF with a text layer, or convert the file to DOCX.',
           detail: `Extracted character count: ${rawText.length}. Page count: ${pageCount}. Threshold: ${MIN_CHARS_FOR_VALID_TEXT}.`,
         } satisfies ParseError;
       }
 
+      // 2. Page limit
+      if (pageCount > MAX_PAGE_COUNT) {
+        throw {
+          code: ParseErrorCode.PAGE_LIMIT_EXCEEDED,
+          message: 'The uploaded resume exceeds the maximum page limit.',
+          detail: `Maximum ${MAX_PAGE_COUNT} pages allowed. Found ${pageCount}.`,
+        } satisfies ParseError;
+      }
+
+      // 3. Maximum character limit
+      if (rawText.length > MAX_CHARACTER_COUNT) {
+        throw {
+          code: ParseErrorCode.CHARACTER_LIMIT_EXCEEDED,
+          message: 'The uploaded resume exceeds the maximum character limit.',
+          detail: `Maximum ${MAX_CHARACTER_COUNT} characters allowed. Found ${rawText.length}.`,
+        } satisfies ParseError;
+      }
+
+      // 4. Minimum content
+      if (rawText.length < MIN_CHARACTER_COUNT) {
+        throw {
+          code: ParseErrorCode.INSUFFICIENT_CONTENT,
+          message: 'The uploaded resume does not contain enough readable text.',
+          detail: `Minimum ${MIN_CHARACTER_COUNT} characters required. Found ${rawText.length}.`,
+        } satisfies ParseError;
+      }
       return {
         rawText,
         fileType: 'pdf',
         charCount: rawText.length,
+        metadata: {
+          pageCount,
+        },
       };
     }
 
@@ -75,15 +109,21 @@ export async function extractTextFromFile(
     case 'docx': {
       const { rawText, wordCount } = await parseDocx(buffer);
 
-      // DOCX files do not have a scanned-equivalent problem — if mammoth
-      // returned successfully, the file contained text. But a completely
-      // empty DOCX (blank document) is still worth rejecting early.
-      if (rawText.length < MIN_CHARS_FOR_VALID_TEXT) {
+      // 1. Maximum character limit
+      if (rawText.length > MAX_CHARACTER_COUNT) {
         throw {
-          code: ParseErrorCode.PARSE_FAILED,
-          message:
-            'The DOCX file appears to be empty or contains no readable text.',
-          detail: `Extracted character count: ${rawText.length}. Word count: ${wordCount}.`,
+          code: ParseErrorCode.CHARACTER_LIMIT_EXCEEDED,
+          message: 'The uploaded resume exceeds the maximum character limit.',
+          detail: `Maximum ${MAX_CHARACTER_COUNT} characters allowed. Found ${rawText.length}.`,
+        } satisfies ParseError;
+      }
+
+      // 2. Minimum content
+      if (rawText.length < MIN_CHARACTER_COUNT) {
+        throw {
+          code: ParseErrorCode.INSUFFICIENT_CONTENT,
+          message: 'The uploaded resume does not contain enough readable text.',
+          detail: `Minimum ${MIN_CHARACTER_COUNT} characters required. Found ${rawText.length}.`,
         } satisfies ParseError;
       }
 
@@ -91,6 +131,9 @@ export async function extractTextFromFile(
         rawText,
         fileType: 'docx',
         charCount: rawText.length,
+        metadata: {
+          wordCount,
+        },
       };
     }
 

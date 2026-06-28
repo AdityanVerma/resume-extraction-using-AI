@@ -19,17 +19,28 @@ export type SupportedFileType = 'pdf' | 'docx';
  * ApiSuccessResponse before sending it over the wire.
  */
 export interface ParsedTextResult {
-  /** Raw extracted text, exactly as the parser produced it. No trimming,
-   *  no field splitting, no normalization — that is Gemini's job in Phase 2. */
+  /**
+   * Raw extracted text.
+   */
   rawText: string;
 
-  /** Which parser produced this result. Useful for debugging and for the
-   *  Phase 2 prompt builder to know what kind of document it is reading. */
+  /**
+   * Parser used.
+   */
   fileType: SupportedFileType;
 
-  /** Total character count of rawText. Used to detect scanned PDFs (charCount
-   *  of 0 on a non-empty file means no text layer was found). */
+  /**
+   * Number of extracted characters.
+   */
   charCount: number;
+
+  /**
+   * Parser-specific metadata.
+   */
+  metadata: {
+    pageCount?: number;
+    wordCount?: number;
+  };
 }
 
 export interface ResumeData {
@@ -85,6 +96,8 @@ export const ParseErrorCode = {
   /** The file exceeds the configured size limit. */
   FILE_TOO_LARGE: 'FILE_TOO_LARGE',
 
+  PASSWORD_PROTECTED: 'PASSWORD_PROTECTED',
+
   /** The file has a supported extension but is internally corrupt
    *  (e.g. a DOCX that is not a valid ZIP, a PDF with a broken xref table). */
   CORRUPT_FILE: 'CORRUPT_FILE',
@@ -99,6 +112,12 @@ export const ParseErrorCode = {
   /** The file's MIME type and its extension disagree (e.g. a PNG renamed to .pdf).
    *  We reject rather than guess. */
   MIME_EXTENSION_MISMATCH: 'MIME_EXTENSION_MISMATCH',
+
+  PAGE_LIMIT_EXCEEDED: 'PAGE_LIMIT_EXCEEDED',
+
+  CHARACTER_LIMIT_EXCEEDED: 'CHARACTER_LIMIT_EXCEEDED',
+
+  INSUFFICIENT_CONTENT: 'INSUFFICIENT_CONTENT',
 } as const;
 
 /** The string-literal union of all error codes, derived from the object above.
